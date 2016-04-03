@@ -1,5 +1,5 @@
 #! /bin/sh -e
-# Find photos files that are duplicates
+# Find duplicate photos.
 
 usage="$(basename $0) <directory>"
 [ "x$1" = "x" ] && echo "$usage" 1>&2 && exit 1
@@ -13,13 +13,17 @@ usage="$(basename $0) <directory>"
 #
 #	Strip exif completely from each file.
 #	(Without touching original.)
-#	Calculate SHA1 sum for the stripped version
+#	Calculate hash for the stripped version
 #	and associate with the original file name.
 #
 
 sumf=$(mktemp $TMPDIR/psums.XXXXXX)
 rm -f $sumf
+n=0
+printf "hashing photos ..."
 for f in $(find . -type f | grep -Ei '(\.jpg$|\.jpeg$)') ; do
+	n=$((n + 1))
+	printf "."
 	tmpf=$TMPDIR/$(basename $f)
 
 	#
@@ -29,20 +33,23 @@ for f in $(find . -type f | grep -Ei '(\.jpg$|\.jpeg$)') ; do
 	[ "$f" = "$tmpf" ] && echo "Invalid TMPDIR" 1>&2 && exit 1
 
 	#
-	#	Copy, strip and sha1.
+	#	Copy, strip EXIF and hash.
+	#	I tried md5 to see if it was faster and there was no big win.
 	#
 
 	cp $f $tmpf
 	exiv2 rm $tmpf
-	SHA1=$(sha1sum $f | awk '{print $1}')
+	hash=$(sha1sum $f | awk '{print $1}')
+	rm $tmpf
 
 	#
-	#	Output tab-delimited (SHA1, filename) tuple.
+	#	Output tab-delimited (hash, filename) tuple.
 	#
 
-	printf "%s\t%s\n" $SHA1 $f >> $sumf
+	printf "%s\t%s\n" $hash $f >> $sumf
 
 done
+printf " %d hashed.\n" $n
 
 #
 #	Sort sum file.
@@ -53,15 +60,13 @@ sort $sumf > $tmpf
 mv $tmpf $sumf
 
 #
-#	Scan and output and rows with the same SHA1 sum.
+#	Output and rows with the same hash.
 #
 
-LASTSHA1=""
-LASTNAME=""
-while read SHA1 NAME ; do
-	[ "x$LASTSHA1" = "x" ] && LASTSHA1=SHA1 && LASTNAME=NAME && continue
-	if [ "$LAST" = "$SHA1" ] ; then
-		printf "%s\t%s\n" LASTSHA1 LASTNAME
-		printf "%s\t%s\n" SHA1 NAME
-	fi
-done < $sumf
+cat $sumf | awk '{print $1}' | sort | uniq -c | grep -v '^ \+1 ' |
+while read count hash; do
+	grep "^$hash	" $sumf
+	printf "\n"
+done
+
+rm $sumf
