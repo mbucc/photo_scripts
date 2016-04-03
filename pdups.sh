@@ -39,7 +39,7 @@ for f in $(find . -type f | grep -Ei '(\.jpg$|\.jpeg$)') ; do
 
 	cp $f $tmpf
 	exiv2 rm $tmpf
-    hash=$(sha1sum $f | cut -c -40)
+	hash=$(sha1sum $f | cut -c -40)
 	rm $tmpf
 
 	#
