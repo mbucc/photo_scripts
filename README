@@ -5,14 +5,16 @@ Shell scripts for photo management.
                             Usage: pdups.sh <rootdir>
 
     pshuffle.sh     Reshuffle photos into directories named YYYY-MM.
-                    It's designed to be idempotent, and worked that
-                    way in my environment, but test first!  (To test,
-                    change "mv ..." commands in script to "echo mv ..." 
-                    and run script).
+                    It's designed to be idempotent, but test first!
+
+                    To test, change "mv ..." commands in script to
+                    "echo mv ..." and run script.
+
+                            Usage: pshuffle.sh <rootdir>
 
 Requires exiv2, for example:
 
-    brew install exiv2.
+    $ brew install exiv2
 
 
 Inspired by Elodie [2].  Plan to use this with Google Photo to (finally!)
