@@ -10,8 +10,16 @@ Shell scripts for photo management.
                     change "mv ..." commands in script to "echo mv ..." 
                     and run script).
 
-Requires exiv2 (http://www.exiv2.org/).
+Requires exiv2, for example:
 
     brew install exiv2.
 
 
+Inspired by Elodie [2].  Plan to use this with Google Photo to (finally!)
+backup and organize family photos.
+
+
+
+[1] http://www.exiv2.org/
+
+[2] https://medium.com/@jmathai/introducing-elodie-your-personal-exif-based-photo-and-video-assistant-d92868f302ec#.ckh3qzzfv
