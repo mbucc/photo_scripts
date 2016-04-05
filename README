@@ -1,0 +1,17 @@
+Shell scripts for photo management.
+
+    pdups.sh        Check for duplicate photos.
+
+                            Usage: pdups.sh <rootdir>
+
+    pshuffle.sh     Reshuffle photos into directories named YYYY-MM.
+                    It's designed to be idempotent, and worked that
+                    way in my environment, but test first!  (To test,
+                    change "mv ..." commands in script to "echo mv ..." 
+                    and run script).
+
+Requires exiv2 (http://www.exiv2.org/).
+
+    brew install exiv2.
+
+
